@@ -15,21 +15,18 @@ contract Wallet is Ownable{
     }
 
     modifier tokenExist(bytes32 ticker){
-        require(tokenMapping[ticker].tokenAddress != address(0), "Token does not exist"); // postoji li token uopce
+        require(tokenMapping[ticker].tokenAddress != address(0), "Token does not exist"); 
         _;
     }
 
-    // storage -> combine structure between array and mapping
     mapping(bytes32 => Token) public tokenMapping;
     bytes32[] public tokenList;
 
-     // bytes32 je thicker (tokenID) like BNB, BTC i pointa to amount, zbog compareanja tickera, jer je se sa stringovima ne moze
-    mapping(address => mapping(bytes32 => uint256)) public balances; // mapping that supports multiple balances
+    mapping(address => mapping(bytes32 => uint256)) public balances; 
                                                                    
     function addToken(bytes32 ticker, address tokenAddress) onlyOwner external {
         tokenMapping[ticker] = Token(ticker, tokenAddress);
         tokenList.push(ticker);
-        // bytes32("LINK") -> getting bytes32 value of a string
     }
 
     function deposit(uint amount, bytes32 ticker) external tokenExist(ticker) {
@@ -41,7 +38,7 @@ contract Wallet is Ownable{
         require(balances[msg.sender][ticker] >= amount, "Balance not sufficient");
         
         balances[msg.sender][ticker] = balances[msg.sender][ticker].sub(amount);
-        IERC20(tokenMapping[ticker].tokenAddress).transfer(msg.sender, amount); // transfer from this contract to msg.sender
+        IERC20(tokenMapping[ticker].tokenAddress).transfer(msg.sender, amount); 
     }
 
 
